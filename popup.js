@@ -12,6 +12,8 @@ document.getElementById("load").addEventListener("click", async () => {
   chrome.tabs.sendMessage(tab.id, { action: "getHighlights" }, (response) => {
     const container = document.getElementById("result");
     const titleElement = document.getElementById("book-title");
+    const asin = document.getElementById("asin");
+    asin.innerHTML = "";
     container.innerHTML = "";
     titleElement.textContent = "";
 
@@ -23,6 +25,12 @@ document.getElementById("load").addEventListener("click", async () => {
         div.textContent = t;
         container.appendChild(div);
       });
+      response.asin.forEach((el => {
+        const tmp = document.createElement("div");
+        tmp.className = "asin";
+        tmp.textContent = el;
+        asin.appendChild(tmp);
+      }));
     } else {
       container.textContent = "ハイライトが見つかりません。";
     }
