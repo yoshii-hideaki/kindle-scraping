@@ -2,9 +2,15 @@
   "manifest_version": 3,
   "name": "Kindleハイライト取得",
   "version": "1.0",
-  "description": "Kindleのノートページからハイライトを取得して表示します",
-  "permissions": ["activeTab", "scripting"],
-  "host_permissions": ["https://read.amazon.co.jp/*"],
+  "description": "Kindleのノートページから全ての本のハイライトを取得して表示します",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://read.amazon.co.jp/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -15,7 +21,8 @@
   "content_scripts": [
     {
       "matches": ["https://read.amazon.co.jp/notebook*"],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "run_at": "document_idle"
     }
   ]
 }

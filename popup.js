@@ -11,28 +11,28 @@ document.getElementById("load").addEventListener("click", async () => {
   // content script にメッセージを送信
   chrome.tabs.sendMessage(tab.id, { action: "getHighlights" }, (response) => {
     const container = document.getElementById("result");
-    const titleElement = document.getElementById("book-title");
-    const asin = document.getElementById("asin");
-    asin.innerHTML = "";
     container.innerHTML = "";
-    titleElement.textContent = "";
 
-    if (response?.highlights?.length) {
-      titleElement.textContent = response.title;
-      response.highlights.forEach((t) => {
-        const div = document.createElement("div");
-        div.className = "highlight";
-        div.textContent = t;
-        container.appendChild(div);
-      });
-      response.asin.forEach((el => {
-        const tmp = document.createElement("div");
-        tmp.className = "asin";
-        tmp.textContent = el;
-        asin.appendChild(tmp);
-      }));
-    } else {
+    if (!response?.books?.length) {
       container.textContent = "ハイライトが見つかりません。";
+      return;
     }
+
+    response.books.forEach((book) => {
+      // タイトル部分
+      const titleDiv = document.createElement("div");
+      titleDiv.style.marginTop = "12px";
+      titleDiv.style.fontWeight = "bold";
+      titleDiv.textContent = `${book.title} (${book.asin})`;
+      container.appendChild(titleDiv);
+
+      // 各ハイライト
+      book.highlights.forEach((text) => {
+        const hl = document.createElement("div");
+        hl.className = "highlight";
+        hl.textContent = text;
+        container.appendChild(hl);
+      });
+    });
   });
 });
