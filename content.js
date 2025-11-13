@@ -30,6 +30,20 @@ function getAllBookASINs() {
   return Array.from(books).map(book => book.id);
 }
 
+// ハイライトがロードされるまで待つ
+async function waitForHighlights() {
+  return new Promise((resolve) => {
+    const observer = new MutationObserver((mutations) => {
+      if (document.querySelector('.kp-notebook-highlight')) {
+        observer.disconnect();
+        resolve();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  });
+}
+
+
 // 複数本分のハイライトを順に取得
 async function getAllHighlights() {
   const asins = getAllBookASINs();
@@ -43,8 +57,8 @@ async function getAllHighlights() {
     const link = bookEl.querySelector("a");
     if (link) link.click();
 
-    // ページのハイライトがロードされるまで待機（2秒程度）
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // ページのハイライトがロードされるまで待機
+    await waitForHighlights();
 
     const title = getBookTitles(asin);
     const highlights = getHighlights();
